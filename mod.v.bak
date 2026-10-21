@@ -1,0 +1,29 @@
+module mod #(
+    parameter WIDTH = 64
+)(
+    input      [2*WIDTH-1:0] a,   // a có th? lên t?i 128 bit
+    input      [WIDTH-1:0]   n,   // n > 0
+    output reg [WIDTH-1:0]   R
+);
+
+    reg [WIDTH:0] remainder;  // ch? c?n WIDTH+1 bit ?? ch?a ph?n d? t?m
+    integer i;
+
+    always @* begin
+        remainder = 0;
+
+        // Duy?t t?ng bit c?a a t? cao ??n th?p (MSB ? LSB)
+        for (i = 2*WIDTH-1; i >= 0; i = i - 1) begin
+            // remainder = remainder * 2 + bit hi?n t?i c?a a
+            remainder = (remainder << 1) | a[i];
+
+            // N?u remainder >= n thì tr? ?i n (t??ng ???ng ??t bit th??ng = 1)
+            if (remainder >= n) begin
+                remainder = remainder - n;
+            end
+        end
+
+        R = remainder[WIDTH-1:0];
+    end
+
+endmodule
